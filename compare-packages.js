@@ -110,19 +110,42 @@ function main() {
   const depDiff = compareDeps(basePkg.dependencies || {}, targetPkg.dependencies || {});
   const devDepDiff = compareDeps(basePkg.devDependencies || {}, targetPkg.devDependencies || {});
 
+  // Helper to sanitise file names
+  function safeName(name) {
+    return name.replace(/[^a-zA-Z0-9_-]+/g, '_');
+  }
+  const baseShort = safeName(basePkg.name || path.basename(basePath, '.json'));
+  const targetShort = safeName(targetPkg.name || path.basename(targetPath, '.json'));
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0,19);
+
   if (format === 'terminal') {
     printDiff(depDiff, 'dependencies');
     printDiff(devDepDiff, 'devDependencies');
   } else if (format === 'json') {
-    // Ensure output directory exists
     const outputDir = path.join(__dirname, 'output');
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir);
     }
-    const jsonPath = path.join(outputDir, 'report.json');
-    fs.writeFileSync(jsonPath, JSON.stringify({ dependencies: depDiff, devDependencies: devDepDiff }, null, 2));
+    const jsonPath = path.join(
+      outputDir,
+      `report_${baseShort}_vs_${targetShort}_${timestamp}.json`
+    );
+    fs.writeFileSync(jsonPath, JSON.stringify({
+      compared: { base: basePath, target: targetPath },
+      generated: new Date().toISOString(),
+      dependencies: depDiff,
+      devDependencies: devDepDiff
+    }, null, 2));
     console.log(`JSON report written to ${jsonPath}`);
   } else if (format === 'html') {
+    const outputDir = path.join(__dirname, 'output');
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir);
+    }
+    const htmlPath = path.join(
+      outputDir,
+      `report_${baseShort}_vs_${targetShort}_${timestamp}.html`
+    );
     const template = getHtmlTemplate(templatePath);
     const html = renderHtmlTemplate(template, {
       title: 'package.json Comparison Report',
@@ -133,7 +156,8 @@ function main() {
       dependencies: diffToHtmlList(depDiff),
       devDependencies: diffToHtmlList(devDepDiff)
     });
-    console.log(html);
+    fs.writeFileSync(htmlPath, html);
+    console.log(`HTML report written to ${htmlPath}`);
   } else {
     console.error('Unknown format:', format);
     process.exit(1);

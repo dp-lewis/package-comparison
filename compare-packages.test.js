@@ -86,3 +86,29 @@ function testHtmlEscape() {
 }
 
 testHtmlEscape();
+
+// Test the safeName function and filename generation logic
+function testSafeNameAndFilename() {
+  // Inline safeName logic from compare-packages.js
+  function safeName(name) {
+    return name.replace(/[^a-zA-Z0-9_-]+/g, '_');
+  }
+  // Test cases
+  assert.strictEqual(safeName('base-project'), 'base-project');
+  assert.strictEqual(safeName('target project!'), 'target_project_');
+  assert.strictEqual(safeName('foo@1.0.0'), 'foo_1_0_0');
+  assert.strictEqual(safeName('foo/bar:baz'), 'foo_bar_baz');
+
+  // Simulate filename creation
+  const base = 'base-project';
+  const target = 'target-project';
+  const timestamp = '2025-07-11T12-34-56-000Z';
+  const expected = `report_${base}_vs_${target}_${timestamp}.json`;
+  assert.strictEqual(
+    `report_${safeName(base)}_vs_${safeName(target)}_${timestamp}.json`,
+    expected
+  );
+  console.log('safeName and filename generation tests passed!');
+}
+
+testSafeNameAndFilename();
