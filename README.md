@@ -1,7 +1,7 @@
-# package-comparison
+# package-comparison 🚦
 Utility to compare two package.json files to determine how different they are.
 
-## Usage
+## Usage 🛠️
 
 ### 1. Compare Two package.json Files
 
@@ -39,25 +39,25 @@ Or with a custom template:
 ```
 node compare-packages.js base-package.example.json target-package.example.json html --template templates/HTML-TEMPLATE.example.html > output/report.html
 ```
-- The HTML report will include the names and versions of the compared packages.
-- The `output/` directory is ignored by Git and is the recommended location for generated reports.
+- 📄 The HTML report will include the names and versions of the compared packages.
+- 📁 The `output/` directory is ignored by Git and is the recommended location for generated reports.
 
-### 2. Output Formats
+### 2. Output Formats 🎨
 - `terminal`: Shows a colourised diff in your terminal
 - `json`: Outputs the diff as JSON
 - `html`: Outputs the diff as an HTML report (customisable via template)
 
-### 3. Run Unit Tests
+### 3. Run Unit Tests 🧪
 
 To run the included unit tests:
 ```
 node compare-packages.test.js
 ```
 
-### 4. Continuous Integration
+### 4. Continuous Integration 🤖
 
 Unit tests are automatically run on every pull request via GitHub Actions.
 
 ---
 
-Feel free to contribute or suggest improvements!
+Feel free to contribute or suggest improvements! ✨
