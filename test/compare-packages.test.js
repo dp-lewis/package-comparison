@@ -4,7 +4,7 @@
 const assert = require('assert');
 
 // Import functions from compare-packages.js
-const { compareDeps, diffToHtmlList, renderHtmlTemplate, getHtmlTemplate, htmlEscape } = require('./compare-packages');
+const { compareDeps, diffToHtmlList, renderHtmlTemplate, getHtmlTemplate, htmlEscape } = require('../compare-packages');
 
 function testCompareDeps() {
   // Test 1: No changes
