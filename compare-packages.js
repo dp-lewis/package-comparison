@@ -114,7 +114,14 @@ function main() {
     printDiff(depDiff, 'dependencies');
     printDiff(devDepDiff, 'devDependencies');
   } else if (format === 'json') {
-    console.log(JSON.stringify({ dependencies: depDiff, devDependencies: devDepDiff }, null, 2));
+    // Ensure output directory exists
+    const outputDir = path.join(__dirname, 'output');
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir);
+    }
+    const jsonPath = path.join(outputDir, 'report.json');
+    fs.writeFileSync(jsonPath, JSON.stringify({ dependencies: depDiff, devDependencies: devDepDiff }, null, 2));
+    console.log(`JSON report written to ${jsonPath}`);
   } else if (format === 'html') {
     const template = getHtmlTemplate(templatePath);
     const html = renderHtmlTemplate(template, {
