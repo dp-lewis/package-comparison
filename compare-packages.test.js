@@ -4,7 +4,7 @@
 const assert = require('assert');
 
 // Import functions from compare-packages.js
-const { compareDeps } = require('./compare-packages');
+const { compareDeps, diffToHtmlList, renderHtmlTemplate, getHtmlTemplate, htmlEscape } = require('./compare-packages');
 
 function testCompareDeps() {
   // Test 1: No changes
@@ -45,3 +45,44 @@ function testCompareDeps() {
 }
 
 testCompareDeps();
+
+function testDiffToHtmlList() {
+  const diff = {
+    added: { a: '1.0.0' },
+    removed: { b: '2.0.0' },
+    changed: { c: { from: '1.0.0', to: '2.0.0' } }
+  };
+  const html = diffToHtmlList(diff);
+  assert(html.includes('class="added"'));
+  assert(html.includes('class="removed"'));
+  assert(html.includes('class="changed"'));
+  assert(html.includes('+ a@1.0.0'));
+  assert(html.includes('- b@2.0.0'));
+  assert(html.includes('~ c: 1.0.0'));
+  assert(html.includes('&rarr; 2.0.0'));
+  console.log('diffToHtmlList test passed!');
+}
+
+testDiffToHtmlList();
+
+function testRenderHtmlTemplate() {
+  const template = '<h1>{{title}}</h1>{{dependencies}}{{devDependencies}}';
+  const html = renderHtmlTemplate(template, {
+    title: 'Test',
+    dependencies: '<ul><li>dep</li></ul>',
+    devDependencies: '<ul><li>dev</li></ul>'
+  });
+  assert(html.includes('<h1>Test</h1>'));
+  assert(html.includes('<ul><li>dep</li></ul>'));
+  assert(html.includes('<ul><li>dev</li></ul>'));
+  console.log('renderHtmlTemplate test passed!');
+}
+
+testRenderHtmlTemplate();
+
+function testHtmlEscape() {
+  assert.strictEqual(htmlEscape('<>&"\''), '&lt;&gt;&amp;&quot;&#39;');
+  console.log('htmlEscape test passed!');
+}
+
+testHtmlEscape();

@@ -8,17 +8,17 @@ Utility to compare two package.json files to determine how different they are.
 Run the following command:
 
 ```
-node compare-packages.js <base-package.json> <target-package.json> [format]
+node compare-packages.js <base-package.json> <target-package.json> [format] [--template <template-file>]
 ```
 - `<base-package.json>`: Path to the base (reference) package.json file
 - `<target-package.json>`: Path to the target package.json file to compare
 - `[format]`: (Optional) Output format: `terminal` (default), `json`, or `html`
+- `[--template <template-file>]`: (Optional, for `html` format) Path to a custom HTML template file. Defaults to `templates/HTML-TEMPLATE.example.html`.
 
-#### Example
+#### Example: Terminal Output
 ```
 node compare-packages.js base-package.example.json target-package.example.json terminal
 ```
-
 Sample output:
 ```
 === dependencies ===
@@ -31,10 +31,21 @@ Sample output:
 - chai@4.3.7
 ```
 
+#### Example: HTML Output
+```
+node compare-packages.js base-package.example.json target-package.example.json html > output/report.html
+```
+Or with a custom template:
+```
+node compare-packages.js base-package.example.json target-package.example.json html --template templates/HTML-TEMPLATE.example.html > output/report.html
+```
+- The HTML report will include the names and versions of the compared packages.
+- The `output/` directory is ignored by Git and is the recommended location for generated reports.
+
 ### 2. Output Formats
 - `terminal`: Shows a colorized diff in your terminal
 - `json`: Outputs the diff as JSON
-- `html`: (Coming soon) Outputs the diff as an HTML report
+- `html`: Outputs the diff as an HTML report (customizable via template)
 
 ### 3. Run Unit Tests
 

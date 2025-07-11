@@ -49,10 +49,59 @@ function printDiff(diff, label) {
   }
 }
 
+function htmlEscape(str) {
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function diffToHtmlList(diff) {
+  let html = '<ul>';
+  for (const dep in diff.added) {
+    html += `<li class="added">+ ${htmlEscape(dep)}@${htmlEscape(diff.added[dep])}</li>`;
+  }
+  for (const dep in diff.removed) {
+    html += `<li class="removed">- ${htmlEscape(dep)}@${htmlEscape(diff.removed[dep])}</li>`;
+  }
+  for (const dep in diff.changed) {
+    html += `<li class="changed">~ ${htmlEscape(dep)}: ${htmlEscape(diff.changed[dep].from)} &rarr; ${htmlEscape(diff.changed[dep].to)}</li>`;
+  }
+  html += '</ul>';
+  return html;
+}
+
+function renderHtmlTemplate(template, data) {
+  return template
+    .replace(/{{title}}/g, data.title)
+    .replace(/{{baseName}}/g, data.baseName)
+    .replace(/{{baseVersion}}/g, data.baseVersion)
+    .replace(/{{targetName}}/g, data.targetName)
+    .replace(/{{targetVersion}}/g, data.targetVersion)
+    .replace(/{{dependencies}}/g, data.dependencies)
+    .replace(/{{devDependencies}}/g, data.devDependencies);
+}
+
+function getHtmlTemplate(templatePath) {
+  // Always use a template file, defaulting to templates/HTML-TEMPLATE.example.html
+  const defaultTemplate = path.join(__dirname, 'templates', 'HTML-TEMPLATE.example.html');
+  const resolvedPath = templatePath || defaultTemplate;
+  if (fs.existsSync(resolvedPath)) {
+    return fs.readFileSync(resolvedPath, 'utf8');
+  } else {
+    console.error('HTML template file not found:', resolvedPath);
+    process.exit(1);
+  }
+}
+
 function main() {
-  const [,, basePath, targetPath, format = 'terminal'] = process.argv;
+  // Support: node compare-packages.js <base> <target> [format] [--template path]
+  const args = process.argv.slice(2);
+  const basePath = args[0];
+  const targetPath = args[1];
+  const format = args[2] || 'terminal';
+  const templateFlagIndex = args.indexOf('--template');
+  const templatePath = templateFlagIndex !== -1 ? args[templateFlagIndex + 1] : undefined;
+
   if (!basePath || !targetPath) {
-    console.error('Usage: node compare-packages.js <base> <target> [format]');
+    console.error('Usage: node compare-packages.js <base> <target> [format] [--template path]');
     process.exit(1);
   }
   const basePkg = readPackageJson(basePath);
@@ -67,8 +116,17 @@ function main() {
   } else if (format === 'json') {
     console.log(JSON.stringify({ dependencies: depDiff, devDependencies: devDepDiff }, null, 2));
   } else if (format === 'html') {
-    // Placeholder for HTML output
-    console.log('HTML output not implemented yet.');
+    const template = getHtmlTemplate(templatePath);
+    const html = renderHtmlTemplate(template, {
+      title: 'package.json Comparison Report',
+      baseName: basePkg.name || 'Base',
+      baseVersion: basePkg.version || '',
+      targetName: targetPkg.name || 'Target',
+      targetVersion: targetPkg.version || '',
+      dependencies: diffToHtmlList(depDiff),
+      devDependencies: diffToHtmlList(devDepDiff)
+    });
+    console.log(html);
   } else {
     console.error('Unknown format:', format);
     process.exit(1);
@@ -80,3 +138,12 @@ if (require.main === module) {
 } else {
   module.exports = { compareDeps };
 }
+
+// Additional exports for testing
+module.exports = {
+  compareDeps,
+  diffToHtmlList,
+  renderHtmlTemplate,
+  getHtmlTemplate,
+  htmlEscape
+};
