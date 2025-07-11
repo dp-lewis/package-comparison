@@ -13,5 +13,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Run tests
-        run: node compare-packages.test.js
+      - name: Run unit tests
+        run: node test/compare-packages.test.js
+      - name: Run integration tests
+        run: node test/compare-packages.integration.test.js
