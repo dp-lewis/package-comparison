@@ -43,9 +43,9 @@ node compare-packages.js base-package.example.json target-package.example.json h
 - The `output/` directory is ignored by Git and is the recommended location for generated reports.
 
 ### 2. Output Formats
-- `terminal`: Shows a colorized diff in your terminal
+- `terminal`: Shows a colourised diff in your terminal
 - `json`: Outputs the diff as JSON
-- `html`: Outputs the diff as an HTML report (customizable via template)
+- `html`: Outputs the diff as an HTML report (customisable via template)
 
 ### 3. Run Unit Tests
 
