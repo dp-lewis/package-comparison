@@ -8,6 +8,17 @@ Welcome! This file contains standards, instructions, and best practices for cont
 - Use clear, descriptive commit messages.
 - Keep dependencies to a minimum. Only add new dependencies when absolutely necessary and prefer lightweight, well-maintained packages.
 
+## Commit Message Style
+- Use descriptive commit messages that start with a suitable emoji (see [gitmoji.dev](https://gitmoji.dev/) for suggestions).
+- Example commit messages:
+  - ✨ feat: Add new HTML template support
+  - 🐛 fix: Correct diff output for removed dependencies
+  - 📝 docs: Update README with usage examples
+  - ♻️ refactor: Simplify comparison logic
+  - ✅ test: Add tests for HTML output
+  - 🚀 perf: Improve script execution speed
+  - 🔥 remove: Delete unused files or code
+
 ## Code Style
 - Use consistent indentation and formatting.
 - Prefer modern JavaScript (ES6+) features where appropriate.
