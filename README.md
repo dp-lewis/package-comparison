@@ -31,32 +31,46 @@ Sample output:
 - chai@4.3.7
 ```
 
-#### Example: HTML Output
+#### Example: HTML/JSON Output
 ```
-node compare-packages.js base-package.example.json target-package.example.json html > output/report.html
+node compare-packages.js base-package.example.json target-package.example.json html
+node compare-packages.js base-package.example.json target-package.example.json json
 ```
 Or with a custom template:
 ```
-node compare-packages.js base-package.example.json target-package.example.json html --template templates/HTML-TEMPLATE.example.html > output/report.html
+node compare-packages.js base-package.example.json target-package.example.json html --template templates/HTML-TEMPLATE.example.html
 ```
-- 📄 The HTML report will include the names and versions of the compared packages.
+- 📄 The HTML and JSON reports will include the names and versions of the compared packages.
 - 📁 The `output/` directory is ignored by Git and is the recommended location for generated reports.
+- 🕒 Output filenames include the compared file names and a timestamp for traceability (e.g., `report_base_vs_target_2025-07-11T12-34-56.json`).
 
 ### 2. Output Formats 🎨
 - `terminal`: Shows a colourised diff in your terminal
-- `json`: Outputs the diff as JSON
-- `html`: Outputs the diff as an HTML report (customisable via template)
+- `json`: Outputs the diff as JSON (written to the `output/` directory)
+- `html`: Outputs the diff as an HTML report (written to the `output/` directory, customisable via template)
 
 ### 3. Run Unit Tests 🧪
 
 To run the included unit tests:
 ```
-node compare-packages.test.js
+node test/compare-packages.test.js
 ```
 
-### 4. Continuous Integration 🤖
+### 4. Run Integration Tests 🔗
 
-Unit tests are automatically run on every pull request via GitHub Actions.
+To run the integration test (end-to-end):
+```
+node test/compare-packages.integration.test.js
+```
+
+### 5. Continuous Integration 🤖
+
+Unit and integration tests are automatically run on every pull request via GitHub Actions.
+
+### 6. Troubleshooting & FAQ ❓
+- **No output file generated?** Ensure you have write permissions to the `output/` directory.
+- **Template not found?** Check the path to your custom template or use the default in `templates/HTML-TEMPLATE.example.html`.
+- **Want to compare more fields?** See the code comments for how to extend the comparison logic.
 
 ---
 
